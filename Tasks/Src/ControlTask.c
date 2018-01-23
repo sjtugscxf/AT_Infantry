@@ -13,8 +13,8 @@
 
 ///*通过define使一套程序使用多台车*/
 //#define INFANTRY_1
-#define INFANTRY_4
-//#define INFANTRY_5   
+//#define INFANTRY_4
+#define INFANTRY_5   
 
 #define LED_GREEN_TOGGLE() HAL_GPIO_TogglePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin)
 #define LED_RED_TOGGLE()   HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin)
@@ -325,6 +325,8 @@ void controlLoop()
 		ControlCMBR();
 		
 		setCMMotor();
+		
+		PlateMotorTask();
 	}
 }
 
