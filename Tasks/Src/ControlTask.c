@@ -47,6 +47,12 @@ void CMControlInit(void)
 }
 
 //单个底盘电机的控制，下同
+/*
+CM1  右前
+CM2  左前
+CM3  右后
+CM4  左后
+*/
 void ControlCMFL(void)
 {			
 	CM1SpeedPID.ref =  ChassisSpeedRef.forward_back_ref*0.075 
@@ -234,12 +240,12 @@ void setGMMotor()
 
 #ifdef INFANTRY_5
 fw_PID_Regulator_t pitchPositionPID = fw_PID_INIT(8.0, 0.0, 0.0, 10000.0, 10000.0, 10000.0, 10000.0);
-fw_PID_Regulator_t yawPositionPID = fw_PID_INIT(5.0, 0.0, 0.5, 10000.0, 10000.0, 10000.0, 10000.0);//等幅振荡P37.3 I11.9 D3.75  原26.1 8.0 1.1
-fw_PID_Regulator_t pitchSpeedPID = fw_PID_INIT(40.0, 0.0, 15.0, 10000.0, 10000.0, 10000.0, 3500.0);
-fw_PID_Regulator_t yawSpeedPID = fw_PID_INIT(30.0, 0.0, 5, 10000.0, 10000.0, 10000.0, 4000.0);
+fw_PID_Regulator_t yawPositionPID = fw_PID_INIT(8.0, 0.0, 0.5, 10000.0, 10000.0, 10000.0, 10000.0);//等幅振荡P37.3 I11.9 D3.75  原26.1 8.0 1.1
+fw_PID_Regulator_t pitchSpeedPID = fw_PID_INIT(40.0, 0.0, 15.0, 10000.0, 10000.0, 10000.0, 4000.0);
+fw_PID_Regulator_t yawSpeedPID = fw_PID_INIT(70.0, 0.0, 5, 10000.0, 10000.0, 10000.0, 4000.0);
 //手动标定0点
 #define yaw_zero 2163//2200
-#define pitch_zero 3275
+#define pitch_zero 6000
 #endif
 #ifdef INFANTRY_4
 fw_PID_Regulator_t pitchPositionPID = fw_PID_INIT(8.0, 0.0, 0.0, 10000.0, 10000.0, 10000.0, 10000.0);
@@ -272,7 +278,7 @@ void ControlRotate(void)
 		CMRotatePID.ref = 0;
 		CMRotatePID.fdb = gap_angle;
 		CMRotatePID.Calc(&CMRotatePID);   
-		ChassisSpeedRef.rotate_ref = CMRotatePID.output * 13 + rotate_forward * 90 + ChassisSpeedRef.forward_back_ref * 0.01 + ChassisSpeedRef.left_right_ref * 0.01;
+		ChassisSpeedRef.rotate_ref = CMRotatePID.output * 13;// + rotate_forward * 90 + ChassisSpeedRef.forward_back_ref * 0.01 + ChassisSpeedRef.left_right_ref * 0.01;
 	}
 }
 
@@ -302,7 +308,7 @@ void ControlPitch(void)
 	pitchRealAngle = -(GMPITCHRx.angle - pitchZeroAngle) * 360 / 8192.0;
 	NORMALIZE_ANGLE180(pitchRealAngle);
 
-	MINMAX(pitchAngleTarget, -9.0f, 32);
+	MINMAX(pitchAngleTarget, -20.0f, 32);
 				
 	pitchIntensity = ProcessPitchPID(pitchAngleTarget,pitchRealAngle,-gYroXs);
 }
